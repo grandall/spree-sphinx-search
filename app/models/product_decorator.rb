@@ -18,14 +18,16 @@ Product.class_eval do
       sql.gsub("\n", ' ').gsub('  ', '')
     end
 
+    indexes :cat_number
     indexes :name
     indexes :description
-    indexes :meta_description
-    indexes :meta_keywords
     indexes taxons.name, :as => :taxon, :facet => true
+    indexes variants.cat_sub_number, :as => :variant_cat_sub_number
+    indexes variants.manufacturer_number, :as => :variant_manufacturer_number
     has taxons(:id), :as => :taxon_ids
-    group_by :deleted_at
-    group_by :available_on
+    has variants(:id), :as => :variant_ids
+    group_by "products.deleted_at"
+    group_by "products.available_on"
     has is_active_sql, :as => :is_active, :type => :boolean
     source.model.indexed_options.each do |opt|
       has option_sql.call(opt.to_s), :as => :"#{opt}_option", :source => :ranged_query, :type => :multi, :facet => true
