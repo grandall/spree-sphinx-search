@@ -32,5 +32,7 @@ Product.class_eval do
     source.model.indexed_options.each do |opt|
       has option_sql.call(opt.to_s), :as => :"#{opt}_option", :source => :ranged_query, :type => :multi, :facet => true
     end
+
+    set_property :delta => true
   end
 end
