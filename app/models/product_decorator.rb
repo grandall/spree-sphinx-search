@@ -33,6 +33,6 @@ Product.class_eval do
       has option_sql.call(opt.to_s), :as => :"#{opt}_option", :source => :ranged_query, :type => :multi, :facet => true
     end
 
-    set_property :delta => true
+    set_property :delta => (Spree::Config[:use_sphinx_delta_index] == "0" ? false : true)
   end
 end
