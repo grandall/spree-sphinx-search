@@ -22,8 +22,9 @@ Product.class_eval do
     indexes :name
     indexes :description
     indexes taxons.name, :as => :taxon, :facet => true
-    indexes variants.cat_sub_number, :as => :variant_cat_sub_number
+    indexes variants.sku, :as => :variant_sku
     indexes variants.manufacturer_number, :as => :variant_manufacturer_number
+    indexes variants.details, :as => :variant_details
     has taxons(:id), :as => :taxon_ids
     has variants(:id), :as => :variant_ids
     group_by "products.deleted_at"
