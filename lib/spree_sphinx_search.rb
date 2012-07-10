@@ -19,8 +19,5 @@ module SpreeSphinxSearch
     end
     config.to_prepare &method(:activate).to_proc
     config.autoload_paths += %W(#{config.root}/lib)
-
-    def load_tasks
-    end
   end
 end
