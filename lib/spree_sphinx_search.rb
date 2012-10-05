@@ -1,5 +1,5 @@
 require 'spree_core'
-require 'spree_sphinx_search_hooks'
+require_relative '../app/overrides/spree_sphinx_search_hooks'
 require 'thinking-sphinx'
 
 module SpreeSphinxSearch
