@@ -1,5 +1,5 @@
-require 'spree_core'
-require_relative '../app/overrides/spree_sphinx_search_hooks'
+require 'spree/core'
+#require_relative '../app/overrides/spree_sphinx_search_hooks'
 require 'thinking-sphinx'
 
 module SpreeSphinxSearch
@@ -7,10 +7,14 @@ module SpreeSphinxSearch
     def self.activate
       ENV['RAILS_ENV'] = Rails.env
 
-      if Spree::Config.instance
+      if Spree::Config
         Spree::Config.searcher_class = Spree::Search::ThinkingSphinx
-        Spree::Config.set(:product_price_ranges => 
+        Spree::AppConfiguration.class_eval do
+          preference :product_price_ranges, :string
+          preference :use_sphinx_delta_index, :bit
+          Spree::Config.set(:product_price_ranges => 
                       ["Under $25", "$25 to $50", "$50 to $100", "$100 to $200", "$200 and above"])
+        end
       end
 
       Dir.glob(File.join(File.dirname(__FILE__), "../app/**/*_decorator*.rb")) do |c|

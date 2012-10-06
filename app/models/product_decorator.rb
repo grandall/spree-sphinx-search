@@ -1,5 +1,5 @@
-Product.class_eval do
-  class_inheritable_array :indexed_options
+Spree::Product.class_eval do
+  class_attribute :indexed_options
   self.indexed_options = []
 
   define_index do
@@ -33,7 +33,21 @@ Product.class_eval do
     source.model.indexed_options.each do |opt|
       has option_sql.call(opt.to_s), :as => :"#{opt}_option", :source => :ranged_query, :type => :multi, :facet => true
     end
-
+    
     set_property :delta => (Spree::Config[:use_sphinx_delta_index] == "0" ? false : true)
   end
+  # @@superdone = 0
+  #   def self.facets(query, search_options)
+  #     puts "***" * 20
+  #     puts query
+  #     puts search_options.inspect
+  #     puts "***" * 20
+  #     @@superdone += 1
+  #     if @@superdone == 1
+  #       results = super 
+  #     else
+  #       return results
+  #     end
+  #     
+  #   end
 end
