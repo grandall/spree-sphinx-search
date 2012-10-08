@@ -1,7 +1,15 @@
+require 'ransack'
 module Spree::Search
   class ThinkingSphinx < Spree::Core::Search::Base
     def search(*args)
-      nil # ... TODO: what should this method do? See https://github.com/spree/spree/blob/master/core/lib/spree/core/search/base.rb#L37 for possible insight
+      #nil # ... TODO: what should this method do? See https://github.com/spree/spree/blob/master/core/lib/spree/core/search/base.rb#L37 for possible insight
+      raise "Thinking Sphinx Search Called with: #{args.inspect}"
+      #retrieve_products(*args)
+      
+    end
+    
+    def self.retrieve_products
+      raise "hello"
     end
     
     protected
