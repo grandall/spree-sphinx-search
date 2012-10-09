@@ -3,9 +3,10 @@ module Spree::Search
   class ThinkingSphinx < Spree::Core::Search::Base
     def search(*args)
       #nil # ... TODO: what should this method do? See https://github.com/spree/spree/blob/master/core/lib/spree/core/search/base.rb#L37 for possible insight
-      raise "Thinking Sphinx Search Called with: #{args.inspect}"
+      #raise "Thinking Sphinx Search Called with: #{args.inspect}"
       #retrieve_products(*args)
-      
+      return nil if args.count == 0
+      raise "Thinking Sphinx Search Called with: #{args.inspect}"
     end
     
     def self.retrieve_products
@@ -27,7 +28,7 @@ module Spree::Search
       result_scope = base_scope
       
       if order_by_price
-        result_scope = base_scope.order("products.price #{order_by_price == 'descend' ? 'desc' : 'asc'}")
+        result_scope = base_scope.order("spree_products.price #{order_by_price == 'descend' ? 'desc' : 'asc'}")
       end
       
       if facets_hash && facets_hash.keys.count > 0
@@ -41,7 +42,7 @@ module Spree::Search
       if taxon
         taxon_ids = taxon.self_and_descendants.map(&:id)
         #products_with_taxon_ids = Product.where("products.id in (select product_id from product_taxons where taxon_id in (?))", taxon_ids)
-        result_scope = result_scope.includes(:taxons).where('taxons.id in (?)', taxon_ids)
+        result_scope = result_scope.includes(:taxons).where('spree_taxons.id in (?)', taxon_ids)
         #result_scope = result_scope.where("products.id in (select product_id from products_taxons where taxon_id in (?))", taxon_ids)
         #puts "taxon added " * 10
         puts result_scope.to_sql
@@ -55,10 +56,10 @@ module Spree::Search
       #@properties[:facets] = parse_facets_hash(facets)
       #@properties[:suggest] = nil if @properties[:suggest] == query
       
-      product_ids = result_scope.pluck("products.id")
+      product_ids = result_scope.pluck("spree_products.id")
       
       #raise base_scope.where("products.id in (?)", product_ids).to_sql
-      base_scope.where("products.id in (?)", product_ids)
+      base_scope.where("spree_products.id in (?)", product_ids)
     end
     
     # def get_base_scope
