@@ -10,7 +10,7 @@ module Spree::Search
     end
     
     def self.retrieve_products
-      raise "hello"
+      raise "hello" # TODO: does this ever get called?
     end
     
     protected
