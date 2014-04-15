@@ -4,7 +4,7 @@ module Spree
     self.indexed_options = []
 
     define_index do
-      is_active_sql = "(spree_products.deleted_at IS NULL AND spree_products.available_on <= NOW() #{'AND (spree_products.count_on_hand > 0)' unless Spree::Config[:allow_backorders]} )"
+      is_active_sql = "(spree_products.deleted_at IS NULL AND spree_products.available_on <= NOW() #{'AND (spree_products.count_on_hand > 0)'} )"
       option_sql = lambda do |option_name|
         sql = <<-eos
           SELECT DISTINCT p.id, ov.id
@@ -34,7 +34,7 @@ module Spree
       source.model.indexed_options.each do |opt|
         has option_sql.call(opt.to_s), :as => :"#{opt}_option", :source => :ranged_query, :type => :multi, :facet => true
       end
-    
+
       set_property :delta => (Spree::Config[:use_sphinx_delta_index] == "0" ? false : true)
     end
     # @@superdone = 0
@@ -45,11 +45,11 @@ module Spree
     #     puts "***" * 20
     #     @@superdone += 1
     #     if @@superdone == 1
-    #       results = super 
+    #       results = super
     #     else
     #       return results
     #     end
-    #     
+    #
     #   end
   end
 end
