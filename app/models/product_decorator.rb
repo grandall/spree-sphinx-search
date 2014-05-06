@@ -4,7 +4,7 @@ module Spree
     self.indexed_options = []
 
     define_index do
-      is_active_sql = "(spree_products.deleted_at IS NULL AND spree_products.available_on <= NOW() #{'AND (spree_products.count_on_hand > 0)'} )"
+      is_active_sql = "(spree_products.deleted_at IS NULL AND spree_products.available_on <= NOW())"
       option_sql = lambda do |option_name|
         sql = <<-eos
           SELECT DISTINCT p.id, ov.id
