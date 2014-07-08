@@ -8,11 +8,11 @@ module Spree::Search
       return nil if args.count == 0
       raise "Thinking Sphinx Search Called with: #{args.inspect}"
     end
-    
+
     def self.retrieve_products
       raise "hello" # TODO: does this ever get called?
     end
-    
+
     protected
     # method should return AR::Relations with conditions {:conditions=> "..."} for Product model
     def get_products_conditions_for(base_scope, keywords) #noticing Spree calls this method with "keywords" as the arg gives us some ideas as to what it should do
@@ -23,21 +23,21 @@ module Spree::Search
       puts query.inspect
       puts "base_scope " * 10
       puts base_scope.to_sql
-      
+
       product_ids = []
       result_scope = base_scope
-      
+
       if order_by_price
         result_scope = base_scope.order("spree_products.price #{order_by_price == 'descend' ? 'desc' : 'asc'}")
       end
-      
+
       if facets_hash && facets_hash.keys.count > 0
         puts "facets hash " * 10
         puts facets_hash.inspect
         result_scope = result_scope.where(facets_hash)
         raise "we finally got a facets hash"
       end
-      
+
       #result_scope = result_scope.with(is_active: 1) # what was this supposed to be doing?
       if taxon
         taxon_ids = taxon.self_and_descendants.map(&:id)
@@ -47,21 +47,21 @@ module Spree::Search
         #puts "taxon added " * 10
         puts result_scope.to_sql
       end
-      
+
       # what are the following five lines supposed to have been doing?
       #facets = Product.facets(query, search_options)
       #products = facets.for
-      
+
       #@properties[:products] = products
       #@properties[:facets] = parse_facets_hash(facets)
       #@properties[:suggest] = nil if @properties[:suggest] == query
-      
+
       product_ids = result_scope.pluck("spree_products.id")
-      
+
       #raise base_scope.where("products.id in (?)", product_ids).to_sql
       base_scope.where("spree_products.id in (?)", product_ids)
     end
-    
+
     # def get_base_scope
     #       base_scope = Spree::Product.active
     #       #base_scope = base_scope.in_taxon(taxon) unless taxon.blank?
@@ -70,7 +70,7 @@ module Spree::Search
     #       base_scope = add_search_scopes(base_scope)
     #       base_scope
     #     end
-    
+
 
     def prepare(params)
       @properties[:facets_hash] = params[:facets] || {}
@@ -81,17 +81,17 @@ module Spree::Search
       @properties[:page] = (params[:page].to_i <= 0) ? 1 : params[:page].to_i
       @properties[:manage_pagination] = true
       @properties[:order_by_price] = params[:order_by_price]
-      if !params[:order_by_price].blank?
-        @product_group = Spree::ProductGroup.new.from_route([params[:order_by_price]+"_by_master_price"])
-      elsif params[:product_group_name]
-        @cached_product_group = Spree::ProductGroup.find_by_permalink(params[:product_group_name])
-        @product_group = Spree::ProductGroup.new
-      elsif params[:product_group_query]
-        @product_group = Spree::ProductGroup.new.from_route(params[:product_group_query].split("/"))
-      else
-        @product_group = Spree::ProductGroup.new
-      end
-      @product_group = @product_group.from_search(params[:search]) if params[:search]
+      # if !params[:order_by_price].blank?
+      #   @product_group = Spree::ProductGroup.new.from_route([params[:order_by_price]+"_by_master_price"])
+      # elsif params[:product_group_name]
+      #   @cached_product_group = Spree::ProductGroup.find_by_permalink(params[:product_group_name])
+      #   @product_group = Spree::ProductGroup.new
+      # elsif params[:product_group_query]
+      #   @product_group = Spree::ProductGroup.new.from_route(params[:product_group_query].split("/"))
+      # else
+      #   @product_group = Spree::ProductGroup.new
+      # end
+      # @product_group = @product_group.from_search(params[:search]) if params[:search]
     end
 
 private
